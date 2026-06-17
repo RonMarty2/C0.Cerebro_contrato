@@ -1,0 +1,96 @@
+{
+  "contract_version": "1.0.0",
+  "response_id": "res_market_missing_inputs_001",
+  "request_id": "req_market_001",
+  "brain_id": "market-intelligence-engine",
+  "status": "needs_input",
+  "result": {},
+  "trace": [
+    {
+      "trace_step_id": "tr_pending_001",
+      "brain_id": "market-intelligence-engine",
+      "action": "detectar_insumos_faltantes",
+      "rationale": "El cerebro no debe inventar fuentes ni completar datos de mercado ausentes.",
+      "input_refs": [
+        "envelope.current_inputs",
+        "contexts.market.data_sources"
+      ],
+      "output_refs": [
+        "warnings.warn_pending_001",
+        "validations.val_pending_001"
+      ],
+      "evidence_ids": [],
+      "assumption_ids": [],
+      "depends_on": [],
+      "timestamp": "2026-06-17T10:05:00-04:00"
+    }
+  ],
+  "evidence": [],
+  "assumptions": [],
+  "validations": [
+    {
+      "validation_id": "val_pending_001",
+      "validator": "market-intelligence-engine.contract",
+      "status": "pending_input",
+      "severity": "blocking",
+      "message": "No hay fuente verificable para estimar demanda.",
+      "affected_paths": [
+        "result.market_size",
+        "result.demand_forecast"
+      ],
+      "pending_input": "WEBAPP debe solicitar al usuario una fuente oficial, encuesta o dato interno trazable.",
+      "trace_step_ids": [
+        "tr_pending_001"
+      ],
+      "evidence_ids": []
+    }
+  ],
+  "warnings": [
+    {
+      "warning_id": "warn_pending_001",
+      "code": "PENDING_INPUT_REQUIRED",
+      "severity": "blocking",
+      "message": "Faltan insumos minimos para calcular demanda sin inventar fuentes.",
+      "pending_input": "Adjuntar datos de poblacion objetivo, frecuencia de compra o encuesta.",
+      "affected_paths": [
+        "envelope.current_inputs",
+        "contexts.market.data_sources"
+      ]
+    }
+  ],
+  "handoff": [
+    {
+      "handoff_id": "handoff_market_to_webapp_pending_001",
+      "from_brain": "market-intelligence-engine",
+      "to_brains": [
+        "WEBAPP"
+      ],
+      "purpose": "Solicitar informacion faltante al usuario antes de continuar.",
+      "feeds_phase_ids": [
+        "market_analysis"
+      ],
+      "payload_refs": [
+        "warnings.warn_pending_001",
+        "validations.val_pending_001"
+      ],
+      "payload": {
+        "pending_state": "market_data_required"
+      },
+      "required_inputs": [
+        "datos_poblacion_objetivo",
+        "frecuencia_compra",
+        "fuente_verificable"
+      ],
+      "expected_outputs": [
+        "brain_request_actualizado"
+      ],
+      "blocking": true
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-06-17T10:05:01-04:00",
+    "engine_version": "market-intelligence-engine@0.1.0",
+    "model": "contract-example",
+    "duration": "PT1S"
+  }
+}

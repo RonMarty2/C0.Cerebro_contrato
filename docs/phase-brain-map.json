@@ -1,0 +1,276 @@
+[
+  {
+    "phase_id": "intake",
+    "documents": [
+      "proyecto_grado",
+      "tesis",
+      "monografia",
+      "plan_negocio",
+      "factibilidad",
+      "prefactibilidad",
+      "otro"
+    ],
+    "primary_brain": "WEBAPP",
+    "consumer_brains": [
+      "academic-planner-brain",
+      "document-composer-brain"
+    ],
+    "expected_outputs": [
+      "ProjectEnvelope",
+      "constraints",
+      "pending_inputs"
+    ]
+  },
+  {
+    "phase_id": "topic_definition",
+    "documents": [
+      "proyecto_grado",
+      "tesis",
+      "monografia"
+    ],
+    "primary_brain": "academic-planner-brain",
+    "consumer_brains": [
+      "research-evidence-brain",
+      "methodology-brain"
+    ],
+    "expected_outputs": [
+      "topic",
+      "problem_statement",
+      "objectives",
+      "scope"
+    ]
+  },
+  {
+    "phase_id": "business_idea_definition",
+    "documents": [
+      "plan_negocio",
+      "factibilidad",
+      "prefactibilidad"
+    ],
+    "primary_brain": "business-model-brain",
+    "consumer_brains": [
+      "market-intelligence-engine",
+      "financial-feasibility-brain"
+    ],
+    "expected_outputs": [
+      "business_idea",
+      "value_proposition",
+      "revenue_model"
+    ]
+  },
+  {
+    "phase_id": "literature_review",
+    "documents": [
+      "proyecto_grado",
+      "tesis",
+      "monografia"
+    ],
+    "primary_brain": "research-evidence-brain",
+    "consumer_brains": [
+      "document-composer-brain",
+      "validation-brain"
+    ],
+    "expected_outputs": [
+      "evidence",
+      "theoretical_framework",
+      "research_gap"
+    ]
+  },
+  {
+    "phase_id": "methodology_design",
+    "documents": [
+      "proyecto_grado",
+      "tesis",
+      "monografia",
+      "factibilidad"
+    ],
+    "primary_brain": "methodology-brain",
+    "consumer_brains": [
+      "market-intelligence-engine",
+      "validation-brain"
+    ],
+    "expected_outputs": [
+      "methodology",
+      "variables",
+      "instruments"
+    ]
+  },
+  {
+    "phase_id": "market_analysis",
+    "documents": [
+      "plan_negocio",
+      "factibilidad",
+      "prefactibilidad"
+    ],
+    "primary_brain": "market-intelligence-engine",
+    "consumer_brains": [
+      "simuladorPRO",
+      "financial-feasibility-brain",
+      "document-composer-brain"
+    ],
+    "expected_outputs": [
+      "customer_segments",
+      "demand_model",
+      "competitors",
+      "market_warnings"
+    ]
+  },
+  {
+    "phase_id": "technical_operational_study",
+    "documents": [
+      "plan_negocio",
+      "factibilidad",
+      "prefactibilidad"
+    ],
+    "primary_brain": "operations-brain",
+    "consumer_brains": [
+      "simuladorPRO",
+      "financial-feasibility-brain"
+    ],
+    "expected_outputs": [
+      "capacity",
+      "processes",
+      "resources",
+      "operational_risks"
+    ]
+  },
+  {
+    "phase_id": "financial_feasibility",
+    "documents": [
+      "plan_negocio",
+      "factibilidad",
+      "prefactibilidad"
+    ],
+    "primary_brain": "financial-feasibility-brain",
+    "consumer_brains": [
+      "simuladorPRO",
+      "validation-brain",
+      "document-composer-brain"
+    ],
+    "expected_outputs": [
+      "npv",
+      "irr",
+      "break_even",
+      "financial_scenarios"
+    ]
+  },
+  {
+    "phase_id": "scenario_simulation",
+    "documents": [
+      "plan_negocio",
+      "factibilidad",
+      "prefactibilidad"
+    ],
+    "primary_brain": "simuladorPRO",
+    "consumer_brains": [
+      "financial-feasibility-brain",
+      "validation-brain"
+    ],
+    "expected_outputs": [
+      "simulation_scenarios",
+      "sensitivity",
+      "scenario_assumptions"
+    ]
+  },
+  {
+    "phase_id": "legal_environmental_review",
+    "documents": [
+      "plan_negocio",
+      "factibilidad",
+      "prefactibilidad"
+    ],
+    "primary_brain": "compliance-brain",
+    "consumer_brains": [
+      "validation-brain",
+      "document-composer-brain"
+    ],
+    "expected_outputs": [
+      "legal_requirements",
+      "permits",
+      "compliance_risks"
+    ]
+  },
+  {
+    "phase_id": "chapter_drafting",
+    "documents": [
+      "proyecto_grado",
+      "tesis",
+      "monografia",
+      "plan_negocio",
+      "factibilidad",
+      "prefactibilidad",
+      "otro"
+    ],
+    "primary_brain": "document-composer-brain",
+    "consumer_brains": [
+      "citation-brain",
+      "validation-brain"
+    ],
+    "expected_outputs": [
+      "draft_sections",
+      "citation_placeholders",
+      "document_warnings"
+    ]
+  },
+  {
+    "phase_id": "citation_review",
+    "documents": [
+      "proyecto_grado",
+      "tesis",
+      "monografia",
+      "plan_negocio",
+      "factibilidad",
+      "prefactibilidad",
+      "otro"
+    ],
+    "primary_brain": "citation-brain",
+    "consumer_brains": [
+      "document-composer-brain",
+      "validation-brain"
+    ],
+    "expected_outputs": [
+      "normalized_citations",
+      "bibliography",
+      "invalid_sources"
+    ]
+  },
+  {
+    "phase_id": "integrated_validation",
+    "documents": [
+      "proyecto_grado",
+      "tesis",
+      "monografia",
+      "plan_negocio",
+      "factibilidad",
+      "prefactibilidad",
+      "otro"
+    ],
+    "primary_brain": "validation-brain",
+    "consumer_brains": [
+      "WEBAPP",
+      "document-composer-brain"
+    ],
+    "expected_outputs": [
+      "validation_results",
+      "blocking_pending_inputs",
+      "approval_status"
+    ]
+  },
+  {
+    "phase_id": "defense_preparation",
+    "documents": [
+      "proyecto_grado",
+      "tesis",
+      "plan_negocio"
+    ],
+    "primary_brain": "defense-coach-brain",
+    "consumer_brains": [
+      "WEBAPP"
+    ],
+    "expected_outputs": [
+      "executive_summary",
+      "expected_questions",
+      "defense_arguments"
+    ]
+  }
+]

@@ -1,0 +1,974 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://academic-brains-contract.dev/schemas/academic-brains-contract.schema.json",
+  "title": "Academic Brains Contract",
+  "description": "Contrato comun para que WEBAPP y cerebros academicos independientes intercambien solicitudes, respuestas, evidencia, trazabilidad y handoff.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/ProjectEnvelope"
+    },
+    {
+      "$ref": "#/$defs/BrainRequest"
+    },
+    {
+      "$ref": "#/$defs/BrainResponse"
+    }
+  ],
+  "$defs": {
+    "ContractVersion": {
+      "const": "1.0.0"
+    },
+    "NonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "NullableString": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "StringArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/NonEmptyString"
+      },
+      "default": []
+    },
+    "AcademicDocumentType": {
+      "type": "string",
+      "enum": [
+        "proyecto_grado",
+        "tesis",
+        "monografia",
+        "plan_negocio",
+        "factibilidad",
+        "prefactibilidad",
+        "otro"
+      ]
+    },
+    "CitationStyle": {
+      "type": "string",
+      "enum": [
+        "APA_7",
+        "IEEE",
+        "VANCOUVER",
+        "CHICAGO",
+        "MLA",
+        "ISO_690",
+        "OTHER"
+      ]
+    },
+    "AcademicStyle": {
+      "type": "string",
+      "enum": [
+        "formal_academic",
+        "technical_professional",
+        "business_professional",
+        "institutional_template",
+        "other"
+      ]
+    },
+    "JsonValue": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        }
+      ]
+    },
+    "QuantitativeValue": {
+      "type": "object",
+      "required": [
+        "kind",
+        "value",
+        "unit",
+        "trace_step_ids",
+        "evidence_ids"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "quantitative_value"
+        },
+        "value": {
+          "type": "number"
+        },
+        "unit": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "label": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "method": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "trace_step_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/NonEmptyString"
+          }
+        },
+        "evidence_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/NonEmptyString"
+          }
+        },
+        "assumption_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/NonEmptyString"
+          },
+          "default": []
+        }
+      }
+    },
+    "ResultValue": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/QuantitativeValue"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResultValue"
+          }
+        },
+        {
+          "type": "object",
+          "not": {
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "const": "quantitative_value"
+              }
+            }
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/ResultValue"
+          }
+        }
+      ]
+    },
+    "ResultObject": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/ResultValue"
+      },
+      "default": {}
+    },
+    "ProjectEnvelope": {
+      "type": "object",
+      "required": [
+        "contract_version",
+        "project_id",
+        "user_project_ref",
+        "document_type",
+        "country",
+        "city",
+        "university",
+        "faculty",
+        "career",
+        "academic_style",
+        "citation_style",
+        "language",
+        "currency",
+        "topic",
+        "business_idea",
+        "sector",
+        "project_subtype",
+        "phase_id",
+        "phase_goal",
+        "approved_phase_outputs",
+        "current_inputs",
+        "assumptions",
+        "constraints",
+        "requested_outputs"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "contract_version": {
+          "$ref": "#/$defs/ContractVersion"
+        },
+        "project_id": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "user_project_ref": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "document_type": {
+          "$ref": "#/$defs/AcademicDocumentType"
+        },
+        "country": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "city": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "university": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "faculty": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "career": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "academic_style": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "citation_style": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "language": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "currency": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "topic": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "business_idea": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "sector": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "project_subtype": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "phase_id": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "phase_goal": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "approved_phase_outputs": {
+          "$ref": "#/$defs/ResultObject"
+        },
+        "current_inputs": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "default": {}
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AssumptionItem"
+          },
+          "default": []
+        },
+        "constraints": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "requested_outputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/NonEmptyString"
+          }
+        }
+      }
+    },
+    "BrainTask": {
+      "type": "object",
+      "required": [
+        "task_id",
+        "name",
+        "instructions"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "task_id": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "name": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "instructions": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "expected_result_shape": {
+          "$ref": "#/$defs/NonEmptyString"
+        }
+      }
+    },
+    "BrainRequest": {
+      "type": "object",
+      "required": [
+        "contract_version",
+        "request_id",
+        "source_brain",
+        "target_brain",
+        "task",
+        "envelope",
+        "contexts",
+        "upstream_handoff",
+        "requested_outputs",
+        "meta"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "contract_version": {
+          "$ref": "#/$defs/ContractVersion"
+        },
+        "request_id": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "source_brain": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "target_brain": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "task": {
+          "$ref": "#/$defs/BrainTask"
+        },
+        "envelope": {
+          "$ref": "#/$defs/ProjectEnvelope"
+        },
+        "contexts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "academic": {
+              "$ref": "#/$defs/AcademicContext"
+            },
+            "business": {
+              "$ref": "#/$defs/BusinessContext"
+            },
+            "financial": {
+              "$ref": "#/$defs/FinancialContext"
+            },
+            "market": {
+              "$ref": "#/$defs/MarketContext"
+            },
+            "document": {
+              "$ref": "#/$defs/DocumentContext"
+            }
+          }
+        },
+        "upstream_handoff": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HandoffBlock"
+          },
+          "default": []
+        },
+        "requested_outputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/NonEmptyString"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "required": [
+            "created_at"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "created_at": {
+              "$ref": "#/$defs/NonEmptyString"
+            },
+            "correlation_id": {
+              "$ref": "#/$defs/NonEmptyString"
+            },
+            "idempotency_key": {
+              "$ref": "#/$defs/NonEmptyString"
+            }
+          }
+        }
+      }
+    },
+    "BrainResponse": {
+      "type": "object",
+      "required": [
+        "contract_version",
+        "response_id",
+        "request_id",
+        "brain_id",
+        "status",
+        "result",
+        "trace",
+        "evidence",
+        "assumptions",
+        "validations",
+        "warnings",
+        "handoff",
+        "meta"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "contract_version": {
+          "$ref": "#/$defs/ContractVersion"
+        },
+        "response_id": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "request_id": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "brain_id": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "completed",
+            "partial",
+            "needs_input",
+            "failed"
+          ]
+        },
+        "result": {
+          "$ref": "#/$defs/ResultObject"
+        },
+        "trace": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TraceStep"
+          },
+          "default": []
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EvidenceItem"
+          },
+          "default": []
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AssumptionItem"
+          },
+          "default": []
+        },
+        "validations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ValidationResult"
+          },
+          "default": []
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ContractWarning"
+          },
+          "default": []
+        },
+        "handoff": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/HandoffBlock"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "required": [
+            "generated_at",
+            "engine_version"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "generated_at": {
+              "$ref": "#/$defs/NonEmptyString"
+            },
+            "engine_version": {
+              "$ref": "#/$defs/NonEmptyString"
+            },
+            "model": {
+              "$ref": "#/$defs/NonEmptyString"
+            },
+            "duration": {
+              "$ref": "#/$defs/NonEmptyString"
+            }
+          }
+        }
+      }
+    },
+    "EvidenceItem": {
+      "type": "object",
+      "required": [
+        "evidence_id",
+        "source_type",
+        "title",
+        "source_name",
+        "citation",
+        "url",
+        "locator",
+        "published_at",
+        "accessed_at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "source_type": {
+          "type": "string",
+          "enum": [
+            "academic_paper",
+            "official_statistic",
+            "legal_norm",
+            "market_report",
+            "dataset",
+            "web_page",
+            "interview",
+            "internal_input",
+            "calculation"
+          ]
+        },
+        "title": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "source_name": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "citation": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "url": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "locator": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "published_at": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "accessed_at": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "notes": {
+          "$ref": "#/$defs/NonEmptyString"
+        }
+      }
+    },
+    "TraceStep": {
+      "type": "object",
+      "required": [
+        "trace_step_id",
+        "brain_id",
+        "action",
+        "rationale",
+        "input_refs",
+        "output_refs",
+        "evidence_ids",
+        "assumption_ids",
+        "depends_on",
+        "timestamp"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "trace_step_id": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "brain_id": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "action": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "rationale": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "input_refs": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "output_refs": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "evidence_ids": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "assumption_ids": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "depends_on": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "timestamp": {
+          "$ref": "#/$defs/NonEmptyString"
+        }
+      }
+    },
+    "AssumptionItem": {
+      "type": "object",
+      "required": [
+        "assumption_id",
+        "statement",
+        "type",
+        "confidence",
+        "required_validation",
+        "affects_outputs"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "assumption_id": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "statement": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "academic",
+            "business",
+            "financial",
+            "market",
+            "document",
+            "technical",
+            "other"
+          ]
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "required_validation": {
+          "type": "boolean"
+        },
+        "affects_outputs": {
+          "$ref": "#/$defs/StringArray"
+        }
+      }
+    },
+    "HandoffBlock": {
+      "type": "object",
+      "required": [
+        "handoff_id",
+        "from_brain",
+        "to_brains",
+        "purpose",
+        "feeds_phase_ids",
+        "payload_refs",
+        "payload",
+        "required_inputs",
+        "expected_outputs",
+        "blocking"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "handoff_id": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "from_brain": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "to_brains": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/NonEmptyString"
+          }
+        },
+        "purpose": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "feeds_phase_ids": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "payload_refs": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "payload": {
+          "$ref": "#/$defs/ResultObject"
+        },
+        "required_inputs": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "expected_outputs": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "blocking": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ValidationResult": {
+      "type": "object",
+      "required": [
+        "validation_id",
+        "validator",
+        "status",
+        "severity",
+        "message",
+        "affected_paths",
+        "trace_step_ids",
+        "evidence_ids"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "validation_id": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "validator": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed",
+            "warning",
+            "pending_input"
+          ]
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "info",
+            "warning",
+            "error",
+            "blocking"
+          ]
+        },
+        "message": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "affected_paths": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "pending_input": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "trace_step_ids": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "evidence_ids": {
+          "$ref": "#/$defs/StringArray"
+        }
+      }
+    },
+    "ContractWarning": {
+      "type": "object",
+      "required": [
+        "warning_id",
+        "code",
+        "severity",
+        "message",
+        "affected_paths"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "warning_id": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "code": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "info",
+            "warning",
+            "blocking"
+          ]
+        },
+        "message": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "pending_input": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "affected_paths": {
+          "$ref": "#/$defs/StringArray"
+        }
+      }
+    },
+    "AcademicContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "country": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "city": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "university": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "faculty": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "career": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "academic_style": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "citation_style": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "language": {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        "document_type": {
+          "$ref": "#/$defs/AcademicDocumentType"
+        },
+        "institutional_rules": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "advisor_notes": {
+          "$ref": "#/$defs/StringArray"
+        }
+      }
+    },
+    "BusinessContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "business_idea": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "sector": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "value_proposition": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "target_customers": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "channels": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "revenue_model": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "key_partners": {
+          "$ref": "#/$defs/StringArray"
+        }
+      }
+    },
+    "FinancialContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "currency": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "planning_horizon": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "revenue_assumptions": {
+          "$ref": "#/$defs/ResultObject"
+        },
+        "cost_assumptions": {
+          "$ref": "#/$defs/ResultObject"
+        },
+        "investment_assumptions": {
+          "$ref": "#/$defs/ResultObject"
+        },
+        "required_indicators": {
+          "$ref": "#/$defs/StringArray"
+        }
+      }
+    },
+    "MarketContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "geography": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "sector": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "customer_segments": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "competitors": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "data_sources": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "demand_hypotheses": {
+          "$ref": "#/$defs/StringArray"
+        }
+      }
+    },
+    "DocumentContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "document_type": {
+          "$ref": "#/$defs/AcademicDocumentType"
+        },
+        "section_id": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "section_title": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "outline_path": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "current_draft": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "required_format": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "citation_style": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "academic_style": {
+          "$ref": "#/$defs/NullableString"
+        }
+      }
+    }
+  }
+}

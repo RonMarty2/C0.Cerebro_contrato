@@ -1,0 +1,203 @@
+{
+  "contract_version": "1.0.0",
+  "response_id": "res_market_001",
+  "request_id": "req_market_001",
+  "brain_id": "market-intelligence-engine",
+  "status": "partial",
+  "result": {
+    "customer_segments": [
+      "estudiantes de pregrado con compras rapidas entre clases",
+      "docentes que consumen durante pausas cortas",
+      "personal administrativo con compras recurrentes"
+    ],
+    "preliminary_annual_revenue": {
+      "kind": "quantitative_value",
+      "label": "Ingreso anual preliminar declarado como escenario base",
+      "value": 900000,
+      "unit": "BOB/year",
+      "method": "population_estimate * initial_adoption_rate * expected_price_bob",
+      "trace_step_ids": [
+        "tr_market_002"
+      ],
+      "evidence_ids": [
+        "ev_user_inputs"
+      ],
+      "assumption_ids": [
+        "asm_market_001"
+      ]
+    },
+    "market_validation_plan": [
+      "Solicitar matricula oficial o reporte institucional equivalente.",
+      "Ejecutar encuesta de frecuencia de compra por segmento.",
+      "Separar demanda por horarios pico y dias de actividad academica."
+    ],
+    "pending_inputs": [
+      "matricula_oficial",
+      "encuesta_frecuencia_compra",
+      "competidores_en_campus"
+    ]
+  },
+  "trace": [
+    {
+      "trace_step_id": "tr_market_001",
+      "brain_id": "market-intelligence-engine",
+      "action": "normalizar_entradas",
+      "rationale": "Se separaron datos declarados por el usuario de fuentes externas aun no provistas.",
+      "input_refs": [
+        "envelope.current_inputs.initial_market"
+      ],
+      "output_refs": [
+        "result.customer_segments",
+        "result.pending_inputs"
+      ],
+      "evidence_ids": [
+        "ev_user_inputs"
+      ],
+      "assumption_ids": [
+        "asm_market_001"
+      ],
+      "depends_on": [],
+      "timestamp": "2026-06-17T10:00:02-04:00"
+    },
+    {
+      "trace_step_id": "tr_market_002",
+      "brain_id": "market-intelligence-engine",
+      "action": "calcular_escenario_preliminar",
+      "rationale": "El valor cuantitativo usa solo entradas internas y queda marcado como preliminar hasta validar fuentes oficiales.",
+      "input_refs": [
+        "envelope.current_inputs.initial_market.population_estimate",
+        "envelope.current_inputs.initial_market.initial_adoption_rate",
+        "envelope.current_inputs.initial_market.expected_price_bob"
+      ],
+      "output_refs": [
+        "result.preliminary_annual_revenue"
+      ],
+      "evidence_ids": [
+        "ev_user_inputs"
+      ],
+      "assumption_ids": [
+        "asm_market_001"
+      ],
+      "depends_on": [
+        "tr_market_001"
+      ],
+      "timestamp": "2026-06-17T10:00:04-04:00"
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "ev_user_inputs",
+      "source_type": "internal_input",
+      "title": "Entradas declaradas por WEBAPP para el pre-analisis de mercado",
+      "source_name": "BrainRequest.envelope.current_inputs.initial_market",
+      "citation": "Entradas internas del request req_market_001; no corresponden a fuente externa.",
+      "url": null,
+      "locator": "examples/brain-request.plan-negocio.market.json",
+      "published_at": null,
+      "accessed_at": "2026-06-17",
+      "notes": "Usar solo como insumo preliminar hasta que WEBAPP adjunte fuentes oficiales."
+    }
+  ],
+  "assumptions": [
+    {
+      "assumption_id": "asm_market_001",
+      "statement": "El escenario preliminar depende de estimaciones declaradas por el usuario y no debe presentarse como dato validado.",
+      "type": "market",
+      "confidence": "low",
+      "required_validation": true,
+      "affects_outputs": [
+        "preliminary_annual_revenue",
+        "financial_handoff"
+      ]
+    }
+  ],
+  "validations": [
+    {
+      "validation_id": "val_market_001",
+      "validator": "market-intelligence-engine.contract",
+      "status": "warning",
+      "severity": "warning",
+      "message": "El calculo cuantitativo tiene trace y evidencia interna, pero requiere validacion externa antes de cierre academico.",
+      "affected_paths": [
+        "result.preliminary_annual_revenue"
+      ],
+      "pending_input": "Fuente oficial o encuesta que valide poblacion, adopcion y precio esperado.",
+      "trace_step_ids": [
+        "tr_market_002"
+      ],
+      "evidence_ids": [
+        "ev_user_inputs"
+      ]
+    }
+  ],
+  "warnings": [
+    {
+      "warning_id": "warn_market_001",
+      "code": "PENDING_OFFICIAL_MARKET_SOURCE",
+      "severity": "warning",
+      "message": "Faltan fuentes oficiales para convertir el escenario preliminar en conclusion academica.",
+      "pending_input": "Adjuntar matricula oficial, encuesta o fuente verificable de demanda.",
+      "affected_paths": [
+        "result.preliminary_annual_revenue",
+        "result.market_validation_plan"
+      ]
+    }
+  ],
+  "handoff": [
+    {
+      "handoff_id": "handoff_market_to_financial_001",
+      "from_brain": "market-intelligence-engine",
+      "to_brains": [
+        "simuladorPRO",
+        "financial-feasibility-brain",
+        "document-composer-brain"
+      ],
+      "purpose": "Alimentar simulacion financiera y redaccion del estudio de mercado con estado de validacion claro.",
+      "feeds_phase_ids": [
+        "financial_feasibility",
+        "business_plan_document"
+      ],
+      "payload_refs": [
+        "result.customer_segments",
+        "result.preliminary_annual_revenue",
+        "result.market_validation_plan",
+        "warnings.warn_market_001"
+      ],
+      "payload": {
+        "preliminary_annual_revenue": {
+          "kind": "quantitative_value",
+          "label": "Ingreso anual preliminar declarado como escenario base",
+          "value": 900000,
+          "unit": "BOB/year",
+          "method": "population_estimate * initial_adoption_rate * expected_price_bob",
+          "trace_step_ids": [
+            "tr_market_002"
+          ],
+          "evidence_ids": [
+            "ev_user_inputs"
+          ],
+          "assumption_ids": [
+            "asm_market_001"
+          ]
+        },
+        "validation_status": "partial_pending_external_evidence"
+      },
+      "required_inputs": [
+        "matricula_oficial",
+        "encuesta_frecuencia_compra"
+      ],
+      "expected_outputs": [
+        "escenarios_financieros",
+        "riesgos_de_mercado",
+        "texto_estudio_mercado"
+      ],
+      "blocking": false
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-06-17T10:00:05-04:00",
+    "engine_version": "market-intelligence-engine@0.1.0",
+    "model": "contract-example",
+    "duration": "PT5S"
+  }
+}

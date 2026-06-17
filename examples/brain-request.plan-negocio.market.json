@@ -1,0 +1,158 @@
+{
+  "contract_version": "1.0.0",
+  "request_id": "req_market_001",
+  "source_brain": "WEBAPP",
+  "target_brain": "market-intelligence-engine",
+  "task": {
+    "task_id": "market_preliminary_demand",
+    "name": "Pre-analisis de demanda de mercado",
+    "instructions": "Normalizar entradas de mercado y devolver un pre-resultado reutilizable por simuladorPRO y por el cerebro financiero.",
+    "expected_result_shape": "segmentos, supuestos, advertencias, handoff financiero y documentario"
+  },
+  "envelope": {
+    "contract_version": "1.0.0",
+    "project_id": "proj_cafe_universitario_001",
+    "user_project_ref": "webapp-demo-001",
+    "document_type": "plan_negocio",
+    "country": "Bolivia",
+    "city": "La Paz",
+    "university": "Universidad de ejemplo",
+    "faculty": "Facultad de Ciencias Economicas",
+    "career": "Administracion de Empresas",
+    "academic_style": "business_professional",
+    "citation_style": "APA_7",
+    "language": "es",
+    "currency": "BOB",
+    "topic": "Plan de negocio para una cafeteria universitaria con pedidos digitales",
+    "business_idea": "Cafeteria universitaria con preventa digital y combos para estudiantes.",
+    "sector": "servicios alimentarios",
+    "project_subtype": "plan_negocio_emprendimiento",
+    "phase_id": "market_analysis",
+    "phase_goal": "Determinar supuestos iniciales de demanda y brechas de informacion antes de simular escenarios.",
+    "approved_phase_outputs": {
+      "problem_statement": "Los estudiantes tienen tiempos limitados para comprar alimentos entre clases."
+    },
+    "current_inputs": {
+      "initial_market": {
+        "population_estimate": 25000,
+        "initial_adoption_rate": 0.12,
+        "expected_price_bob": 300
+      },
+      "known_constraints": [
+        "No hay encuesta validada todavia.",
+        "La universidad no ha confirmado datos oficiales de matricula."
+      ]
+    },
+    "assumptions": [
+      {
+        "assumption_id": "asm_input_001",
+        "statement": "Las cifras iniciales son estimaciones declaradas por el usuario y requieren validacion documental.",
+        "type": "market",
+        "confidence": "low",
+        "required_validation": true,
+        "affects_outputs": [
+          "preliminary_annual_revenue",
+          "market_validation_plan"
+        ]
+      }
+    ],
+    "constraints": [
+      "No inventar fuentes externas.",
+      "Marcar como pendiente cualquier fuente oficial no provista."
+    ],
+    "requested_outputs": [
+      "customer_segments",
+      "preliminary_annual_revenue",
+      "market_validation_plan",
+      "financial_handoff"
+    ]
+  },
+  "contexts": {
+    "academic": {
+      "country": "Bolivia",
+      "city": "La Paz",
+      "university": "Universidad de ejemplo",
+      "faculty": "Facultad de Ciencias Economicas",
+      "career": "Administracion de Empresas",
+      "academic_style": "business_professional",
+      "citation_style": "APA_7",
+      "language": "es",
+      "document_type": "plan_negocio",
+      "institutional_rules": [
+        "Usar tono formal y orientado a decision."
+      ],
+      "advisor_notes": []
+    },
+    "business": {
+      "business_idea": "Cafeteria universitaria con preventa digital y combos para estudiantes.",
+      "sector": "servicios alimentarios",
+      "value_proposition": "Reducir tiempo de espera en compras de alimentos dentro del campus.",
+      "target_customers": [
+        "estudiantes",
+        "docentes",
+        "personal administrativo"
+      ],
+      "channels": [
+        "app web",
+        "punto fisico"
+      ],
+      "revenue_model": "venta directa de combos y bebidas",
+      "key_partners": []
+    },
+    "financial": {
+      "currency": "BOB",
+      "planning_horizon": "anual",
+      "revenue_assumptions": {},
+      "cost_assumptions": {},
+      "investment_assumptions": {},
+      "required_indicators": [
+        "VAN",
+        "TIR",
+        "punto_equilibrio"
+      ]
+    },
+    "market": {
+      "geography": "La Paz, Bolivia",
+      "sector": "servicios alimentarios",
+      "customer_segments": [
+        "estudiantes de pregrado",
+        "docentes",
+        "administrativos"
+      ],
+      "competitors": [],
+      "data_sources": [
+        "entradas internas de WEBAPP"
+      ],
+      "demand_hypotheses": [
+        "La demanda se concentra en descansos y cambios de clase.",
+        "La preventa digital reduce friccion de compra."
+      ]
+    },
+    "document": {
+      "document_type": "plan_negocio",
+      "section_id": "market_analysis",
+      "section_title": "Analisis de mercado",
+      "outline_path": [
+        "Plan de negocio",
+        "Estudio de mercado",
+        "Demanda"
+      ],
+      "current_draft": null,
+      "required_format": "APA_7",
+      "citation_style": "APA_7",
+      "academic_style": "business_professional"
+    }
+  },
+  "upstream_handoff": [],
+  "requested_outputs": [
+    "customer_segments",
+    "preliminary_annual_revenue",
+    "market_validation_plan",
+    "financial_handoff"
+  ],
+  "meta": {
+    "created_at": "2026-06-17T10:00:00-04:00",
+    "correlation_id": "proj_cafe_universitario_001:market_analysis",
+    "idempotency_key": "req_market_001:v1"
+  }
+}
