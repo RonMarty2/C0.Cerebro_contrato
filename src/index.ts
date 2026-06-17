@@ -282,3 +282,115 @@ export const SCHEMA_IDS = {
   brainRequest: "https://academic-brains-contract.dev/schemas/brain-request.schema.json",
   brainResponse: "https://academic-brains-contract.dev/schemas/brain-response.schema.json"
 } as const;
+
+// ---------------------------------------------------------------------------
+// ARTEFACTO DEL ESTUDIANTE
+// Formato estándar que cada cerebro exporta cuando el estudiante completa
+// (o tiene en progreso) su trabajo. Es la "tarjeta de resumen" que WEBAPP
+// consume para el Proyecto Maestro y que los demás cerebros ven como contexto.
+// ---------------------------------------------------------------------------
+
+/** Identificador único de cada cerebro del ecosistema. */
+export type CerebroId =
+  | "simuladorPRO"                    // C1 — finanzas / simulación de inversión
+  | "market-intelligence-engine"      // C2 — mercados / datos reales Bolivia
+  | "academic-methodology-engine"     // C3 — metodología académica
+  | "strategy-business-engine"        // C4 — estrategia empresarial
+  | "operations-feasibility-engine"   // C5 — operaciones y factibilidad técnica
+  | "legal-regulatory-engine-bo"      // C6 — marco legal boliviano
+  | "organization-hr-engine"          // C7 — organización y RRHH
+  | "brand-marketing-engine"          // C8 — branding y marketing
+  | "academic-document-engine"        // C9 — ensamblado y exportación del documento
+  | "defense-qa-engine";              // C10 — auditoría final y preparación defensa
+
+/** Secciones del documento académico que un artefacto puede alimentar. */
+export type DocumentSection =
+  | "marco_referencial"
+  | "marco_teorico"
+  | "analisis_mercado"          // TAM/SAM/SOM, segmentación, encuestas
+  | "diseno_metodologico"       // enfoque, tipo, diseño, variables
+  | "analisis_externo"          // PESTEL, Porter, FODA, EFE
+  | "analisis_interno"          // EFI, cadena de valor, MPC
+  | "plan_organizacional"       // organigrama, RRHH, aportes patronales
+  | "marco_legal"               // personería jurídica, licencias, regulaciones
+  | "plan_operativo_tecnico"    // capacidad instalada, procesos, localización
+  | "plan_marketing"            // buyer persona, mezcla, presupuesto, calendario
+  | "evaluacion_financiera"     // VAN, TIR, flujo de caja, escenarios
+  | "preparacion_defensa";      // preguntas, respuestas guía, riesgos ante tribunal
+
+/** Métrica clave para mostrar en el panel de contexto cruzado. */
+export interface ArtifactKeyMetric {
+  label: string;
+  value: string | number;
+  unit?: string;
+}
+
+/**
+ * Artefacto del Estudiante — la pieza central de la integración entre cerebros.
+ *
+ * Cada cerebro DEBE implementar estos endpoints:
+ *   GET /api/artifact                     → StudentArtifact[] del estudiante autenticado
+ *   GET /api/artifact/:projectId          → StudentArtifact de un proyecto específico
+ *
+ * WEBAPP consume estos endpoints para:
+ *   1. Mostrar el panel de contexto cruzado dentro de cada cerebro
+ *   2. Incorporar datos reales del estudiante al documento académico
+ *   3. Pasar contexto de artefactos anteriores a la IA al generar nuevas secciones
+ *
+ * REGLA DE ORO: el cerebro puede agregar todos los features que quiera
+ * (rankings, visualizaciones, secciones docentes, clases, ejemplos, IA, etc.)
+ * sin modificar este artefacto. Solo el campo `content` crece cuando hay
+ * más datos que exportar al documento.
+ */
+export interface StudentArtifact {
+  // — Identidad —
+  artifact_id: string;
+  contract_version: ContractVersion;
+  cerebro_id: CerebroId;
+  cerebro_version: string;
+
+  // — Del estudiante —
+  google_id: string;
+  project_id: string;           // ID del proyecto dentro del cerebro
+  maestro_id: string | null;    // ID del Proyecto Maestro en WEBAPP (null si no vinculado aún)
+
+  // — Descripción del trabajo —
+  titulo: string;               // ej. "Cafetería La Orquídea"
+  resumen: string;              // 2-3 oraciones: qué hizo y qué encontró
+  key_metrics: ArtifactKeyMetric[];
+  // ej: [{ label: "VAN", value: 45000, unit: "BOB" },
+  //       { label: "TIR", value: 22, unit: "%" }]
+
+  // — Para el documento académico —
+  feeds_sections: DocumentSection[];      // qué secciones del doc alimenta este cerebro
+  content: Record<string, ResultValue>;   // datos estructurados que WEBAPP inserta en el doc
+
+  // — Estado —
+  status: "en_progreso" | "completado" | "aprobado";
+  completeness_pct: number;     // 0–100: cuánto del trabajo está listo
+
+  // — Trazabilidad —
+  created_at: string;           // ISO 8601
+  updated_at: string;
+  approved_at: string | null;
+}
+
+/**
+ * Contexto consolidado que WEBAPP devuelve a cualquier cerebro que lo solicite.
+ *
+ * Endpoint WEBAPP: GET /api/maestro/:maestroId/contexto?googleId=xxx
+ *
+ * Cada cerebro muestra esto en su panel lateral "Tu avance en otros módulos".
+ * La IA de cada cerebro recibe este contexto para generar contenido coherente
+ * con lo que el estudiante ya hizo en otros cerebros.
+ */
+export interface MaestroContexto {
+  maestro_id: string;
+  titulo: string;                          // nombre del Proyecto Maestro
+  document_type: AcademicDocumentType;
+  university: string | null;
+  artefactos: StudentArtifact[];           // uno por cerebro vinculado
+  sections_completed: DocumentSection[];   // secciones que ya tienen datos
+  sections_pending: DocumentSection[];     // secciones que faltan
+  last_updated: string;
+}
